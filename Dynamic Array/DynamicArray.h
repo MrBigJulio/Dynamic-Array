@@ -14,10 +14,13 @@ private:
 public:
 	Array();
 	Array(const Array&);
-	//const Array operator=(const Array&);
 	T& operator[](const T&);
 	void resize();
+	void add(T);
+	void print(int);
+	void edit(int, T);
 };
+
 template <class T>
 Array<T>::Array() {
 	arraySize = startArraySize;
@@ -26,7 +29,7 @@ Array<T>::Array() {
 }
 
 template <class T>
- Array<T>::Array(const Array& obj) {
+Array<T>::Array(const Array& obj) {
 	arraySize = obj.arraySize;
 	numberOfRecords = obj.numberOfRecords;
 	ar = new T[arraySize];
@@ -35,30 +38,17 @@ template <class T>
 	}
 }
 
-/*template <class T>
-const Array<T> Array<T>::operator=(const Array& right) {
-	if (this != right) {
-		delete[] ar;
-		arraySize = right.arraySize;
-		ar = new T[arraySize];
-		for (int i = 0; i < arraySize; i++) {
-			*(ar + i) = *(right.ar = i);
-		}
-		return *this;
-	}
-};*/
-
 template <class T>
-T& Array<T>::operator[](const T& sub) {
-	if (sub < 0) {
+T& Array<T>::operator[](const T& index) {
+	if (index < 0) {
 		cout << "Error! Can't be < 0" << endl;
 	}
-	else if (sub >= arraySize) {
+	else if (index >= arraySize) {
 		resize();
-		return ar[sub];
+		return ar[index];
 	}
 	else {
-		return ar[sub];
+		return ar[index];
 	}
 };
 
@@ -67,7 +57,7 @@ void Array<T>::resize() {
 	Array* copyArray = new Array(*this);
 	arraySize = copyArray->arraySize * resizeCoefficent;
 	numberOfRecords = copyArray->numberOfRecords;
-	delete ar;
+	delete[] ar;
 	ar = new T[arraySize];
 	for (int i = 0; i < arraySize; i++) {
 		if (i < copyArray->arraySize) {
@@ -78,6 +68,31 @@ void Array<T>::resize() {
 			*(ar + i) = 0;
 		}
 	}
-	delete copyArray;
+	delete[] copyArray;
+}
+
+template <class T>
+void Array<T>::add(T record) {
+	if (numberOfRecords >= arraySize)
+		resize();
+	*(ar + numberOfRecords) = record;
+	numberOfRecords++;
+};
+
+template <class T>
+void Array<T>::print(int index) {
+	if (index >= arraySize) {
+		cout << "Error! Out of range!" << endl;
+	}
+	else 
+		cout <<  *(ar + index) << endl;
+}
+
+template <class T>
+void Array<T>::edit(int index, T record) {
+	if (index >= numberOfRecords)
+		cout << "Error! Out of range!" << endl;
+	else
+		*(ar + index) = record;
 }
 #endif // !DYNAMICARRAY_H
