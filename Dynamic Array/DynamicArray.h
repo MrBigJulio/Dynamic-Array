@@ -2,10 +2,9 @@
 #define DYNAMICARRAY_H
 using namespace std;
 
-template <class T>
 class Array {
 private:
-	T* ar;
+	int* ar;
 	int arraySize;
 	int startArraySize = 1;
 	int numberOfRecords;
@@ -14,51 +13,37 @@ private:
 public:
 	Array();
 	Array(const Array&);
-	T& operator[](const T&);
 	void resize();
-	void add(T);
+	void add(int);
 	void print(int);
-	void edit(int, T);
+	void edit(int, int);
+	void clear();
+	void swap(int*, int*);
+	void sort();
+	void info();
 };
 
-template <class T>
-Array<T>::Array() {
+Array::Array() {
 	arraySize = startArraySize;
-	ar = new T[arraySize];
+	ar = new int[arraySize];
 	*ar = 0;
 }
 
-template <class T>
-Array<T>::Array(const Array& obj) {
+Array::Array(const Array& obj) {
 	arraySize = obj.arraySize;
 	numberOfRecords = obj.numberOfRecords;
-	ar = new T[arraySize];
+	ar = new int[arraySize];
 	for (int i = 0; i < arraySize; i++) {
 		*(ar + i) = *(obj.ar + i);
 	}
 }
 
-template <class T>
-T& Array<T>::operator[](const T& index) {
-	if (index < 0) {
-		cout << "Error! Can't be < 0" << endl;
-	}
-	else if (index >= arraySize) {
-		resize();
-		return ar[index];
-	}
-	else {
-		return ar[index];
-	}
-};
-
-template <class T>
-void Array<T>::resize() {
+void Array::resize() {
 	Array* copyArray = new Array(*this);
 	arraySize = copyArray->arraySize * resizeCoefficent;
 	numberOfRecords = copyArray->numberOfRecords;
 	delete[] ar;
-	ar = new T[arraySize];
+	ar = new int[arraySize];
 	for (int i = 0; i < arraySize; i++) {
 		if (i < copyArray->arraySize) {
 			*(ar + i) = *(copyArray->ar + i);
@@ -68,19 +53,17 @@ void Array<T>::resize() {
 			*(ar + i) = 0;
 		}
 	}
-	delete[] copyArray;
+	delete copyArray;
 }
 
-template <class T>
-void Array<T>::add(T record) {
+void Array::add(int record) {
 	if (numberOfRecords >= arraySize)
 		resize();
 	*(ar + numberOfRecords) = record;
 	numberOfRecords++;
 };
 
-template <class T>
-void Array<T>::print(int index) {
+void Array::print(int index) {
 	if (index >= arraySize) {
 		cout << "Error! Out of range!" << endl;
 	}
@@ -88,11 +71,39 @@ void Array<T>::print(int index) {
 		cout <<  *(ar + index) << endl;
 }
 
-template <class T>
-void Array<T>::edit(int index, T record) {
+void Array::edit(int index, int record) {
 	if (index >= numberOfRecords)
 		cout << "Error! Out of range!" << endl;
 	else
 		*(ar + index) = record;
+}
+
+void Array::clear() {
+	for (int i = 0; i < numberOfRecords; i++) {
+		*(ar + i) = 0;
+	}
+	numberOfRecords = 0;
+}
+
+void Array::swap(int* a, int* b) {
+	int copy = *a;
+	*a = *b;
+	*b = copy;
+}
+
+void Array::sort() {
+	for (int i = 0; i < numberOfRecords - 1; i++) {
+		for (int j = 0; j < numberOfRecords - i - 1; j++) {
+			if (ar[j] > ar[j + 1]) {
+				swap(&ar[j], &ar[j + 1]);
+			}
+		}
+	}
+}
+
+void Array::info() {
+	cout << "Number of records in array: " << numberOfRecords << endl;
+	cout << "Actual size of array: " << arraySize << endl;
+	cout << "Position of array in memory: " << this << endl;
 }
 #endif // !DYNAMICARRAY_H
